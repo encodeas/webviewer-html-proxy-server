@@ -79,7 +79,7 @@ const createServer = ({
       timestamp({
         format: () => {
           return new Date().toLocaleString('en-US', {
-            timeZone: 'America/Vancouver',
+            timeZone: 'Europe/London',
             month: 'short',
             day: '2-digit',
             year: 'numeric',
@@ -118,6 +118,7 @@ const createServer = ({
   const puppeteerOptions: PuppeteerOptions = {
     product: 'chrome',
     defaultViewport,
+    args: ['--no-sandbox'],
     headless: true,
     ignoreHTTPSErrors: false, // whether to ignore HTTPS errors during navigation
   };
