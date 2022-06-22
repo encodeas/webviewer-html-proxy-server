@@ -1,5 +1,5 @@
 {
-  "name": "@encode/webviewer-html-proxy-server",
+  "name": "@encodeas/webviewer-html-proxy-server",
   "version": "1.9.2",
   "description": "This is a proxy server to use with @pdftron/webviewer-html",
   "main": "dist/main.js",
@@ -57,10 +57,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/PDFTron/webviewer-html-proxy-server.git"
+    "url": "git+https://github.com/encodeas/webviewer-html-proxy-server.git"
   },
   "bugs": {
-    "url": "https://github.com/PDFTron/webviewer-html-proxy-server/issues"
+    "url": "https://github.com/encodeas/webviewer-html-proxy-server/issues"
   },
-  "homepage": "https://github.com/PDFTron/webviewer-html-proxy-server#readme"
+  "homepage": "https://github.com/encodeas/webviewer-html-proxy-server#readme"
 }
