@@ -1,5 +1,5 @@
 {
-  "name": "@encodeas/webviewer-html-proxy-server",
+  "name": "@encode-npm/webviewer-html-proxy-server",
   "version": "1.9.2",
   "description": "This is a proxy server to use with @pdftron/webviewer-html",
   "main": "dist/main.js",
@@ -7,6 +7,7 @@
   "license": "ISC",
   "types": "types/index.d.ts",
   "scripts": {
+    "artifactregistry-login": "npx google-artifactregistry-auth",
     "build": "webpack --mode=production --config webpack.config.js",
     "build-doc": "rm -rf doc && ./node_modules/.bin/jsdoc -c jsdocconfig.json -t ./node_modules/ink-docstrap/template -R README.md",
     "watch-debug": "webpack --watch --mode=development --config webpack.config.js",
