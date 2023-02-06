@@ -1,3 +1,11 @@
+## 1.9.7 (2023-01-20)
+
+- Improved page height calculation
+
+## 1.9.6 (2023-01-17)
+
+- Add support for custom HTTP headers
+
 ## 1.9.0 (2022-06-01)
 
 - Added eslint-typescript

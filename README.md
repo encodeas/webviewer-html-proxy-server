@@ -1,6 +1,10 @@
 # Webviewer Html Proxy Server
 This is a proxy server to use with [HTML sample by PDFTron](https://github.com/PDFTron/webviewer-html-annotate-proxy)
 
+## Disclaimer
+
+This project is experimental. A proxy server is used to serve webpage assets. This is done to get around various security issues, when loading a webpage in an iframe. This works for a good amount of pages but there are many exceptions. If you have a subset of web pages that you would like to support then we recommend forking [this repository](https://github.com/PDFTron/webviewer-html-proxy-server) and making the necessary fixes. We won't be making those changes because it would likely result in other pages failing.
+
 ## Install
 
 ```
@@ -9,7 +13,7 @@ npm install @pdftron/webviewer-html-proxy-server
 
 ## How to use
 
-Call the `createServer` function in your server component and pass in an object that includes `SERVER_ROOT` and `PORT`. You can, optionally, pass in the third parameter, an object to configure CORS, the fourth parameter, an object to configure COOKIE and the fifth parameter, a boolean value to allow for unsecured HTTP websites to be proxied.
+Call the `createServer` function in your server component and pass in an object that includes `SERVER_ROOT` and `PORT`. You can, optionally, pass in `CORS_OPTIONS` - an object to configure CORS, `COOKIE_SETTING` - an object to configure COOKIE and `ALLOW_HTTP_PROXY`, a boolean value to allow loading localhost files and for unsecured HTTP websites to be proxied.
 
 See: https://expressjs.com/en/resources/middleware/cors.html and https://expressjs.com/en/api.html#res.cookie
 
@@ -22,7 +26,7 @@ HTMLProxyServer.createServer({
 });
 ```
 
-Setting CORS example:
+Setting `CORS_OPTIONS` example:
 
 ```javascript
 HTMLProxyServer.createServer({
@@ -37,7 +41,7 @@ HTMLProxyServer.createServer({
 });
 ```
 
-Setting COOKIE example:
+Setting `COOKIE_SETTING` example:
 
 ```javascript
 HTMLProxyServer.createServer({
@@ -50,7 +54,7 @@ HTMLProxyServer.createServer({
 });
 ```
 
-Setting ALLOW_HTTP_PROXY example:
+Setting `ALLOW_HTTP_PROXY` example:
 
 ```javascript
 HTMLProxyServer.createServer({

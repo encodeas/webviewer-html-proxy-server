@@ -56,7 +56,7 @@ import linkPreviewStyle from './assets/linkPreview.css';
  * @param {express.CookieOptions} [options.COOKIE_SETTING]
  * An object to configure COOKIE. See {@link https://expressjs.com/en/api.html#res.cookie}
  * @param {boolean} [options.ALLOW_HTTP_PROXY]
- * Boolean containing value to allow for unsecured HTTP websites to be proxied.
+ * Boolean containing value to allow loading localhost files and for unsecured HTTP websites to be proxied.
  * @returns {void}
  * @example
  * const HTMLProxyServer = require('@pdftron/webviewer-html-proxy-server');
@@ -70,8 +70,8 @@ const createServer = ({
   SERVER_ROOT,
   PORT,
   CORS_OPTIONS = { origin: `${SERVER_ROOT}:3000`, credentials: true },
-  COOKIE_SETTING = { sameSite: 'none', secure: true },
-  ALLOW_HTTP_PROXY = false
+  COOKIE_SETTING = {},
+  ALLOW_HTTP_PROXY = true
 }: ServerConfigurationOptions): void => {
   const { align, colorize, combine, printf, timestamp } = format;
   const logger = createLogger({
@@ -140,6 +140,13 @@ const createServer = ({
         browser = await puppeteer.launch(puppeteerOptions);
         const page = await browser.newPage();
         // page.on('console', msg => console.log('PAGE LOG:', msg.text()));
+
+        const customHeaders = req.headers.customheaders;
+        if (customHeaders) {
+          const customHeadersObject = JSON.parse(`${customHeaders}`);
+          await page.setExtraHTTPHeaders(customHeadersObject);
+        }
+
         const pageHTTPResponse = await page.goto(url, {
           // use 'domcontentloaded' https://github.com/puppeteer/puppeteer/issues/1666
           waitUntil: 'domcontentloaded', // defaults to load
@@ -156,6 +163,9 @@ const createServer = ({
           // cookie will only be set when res is sent succesfully
           const oneHour: number = 1000 * 60 * 60;
           res.cookie('pdftron_proxy_sid', validUrl, { ...COOKIE_SETTING, maxAge: oneHour });
+          if (customHeaders) {
+            res.cookie('pdftron_proxy_headers', `${customHeaders}`, { ...COOKIE_SETTING, maxAge: oneHour });
+          }
           res.status(200).send({ validUrl });
         }
       } catch (err) {
@@ -206,10 +216,12 @@ const createServer = ({
               }
             }
           });
+          const bodyHeight = document.body.scrollHeight || document.body.clientHeight || 0;
+          const pageHeight = bodyHeight > 0 && bodyHeight > sum ? bodyHeight : sum;
           return {
             width: document.body.scrollWidth || document.body.clientWidth || 1440,
             // sum can be less than defaultViewport
-            height: sum > 770 ? sum : 770,
+            height: pageHeight > 770 ? pageHeight : 770,
           };
         });
 
@@ -279,6 +291,9 @@ const createServer = ({
   // // TAKEN FROM: https://stackoverflow.com/a/63602976
   app.use('/', (clientRequest: Request, clientResponse: Response) => {
     const cookiesUrl: string = clientRequest.cookies.pdftron_proxy_sid;
+    const cookiesHeaders: string = clientRequest.cookies.pdftron_proxy_headers;
+    const cookiesHeadersObject = cookiesHeaders ? JSON.parse(cookiesHeaders) : {};
+    // logger.info(`Cookies ${cookiesUrl}`);
     // check again for all requests that go through the proxy server
     if (cookiesUrl && isValidURL(cookiesUrl, ALLOW_HTTP_PROXY)) {
       const {
@@ -310,6 +325,7 @@ const createServer = ({
           'User-Agent': clientRequest.headers['user-agent'],
           'Referer': `${PATH}${pathname}`,
           'Accept-Encoding': 'identity', // for amazon to work
+          ...cookiesHeadersObject,
         }
       };
 
@@ -501,9 +517,10 @@ const createServer = ({
         callback(serverResponse, clientResponse);
       });
 
-      serverRequest.on('error', (e) => {
+      serverRequest.on('error', (e: NodeJS.ErrnoException) => {
         serverRequest.end();
-        logger.error(`Http request, ${e}`);
+        const errorToDisplay = `${e} \\n "${e.code}"`;
+        logger.error(errorToDisplay);
         // Sometimes error ECONNRESET from serverRequest happened after clientResponse (the proxy) was successfully sent
         // Happened on instagram.com
         if (!clientResponse.writableFinished) {
@@ -512,7 +529,7 @@ const createServer = ({
             'Cross-Origin-Resource-Policy': 'cross-origin',
             'Cross-Origin-Embedder-Policy': 'credentialless',
           });
-          clientResponse.end(getProxyFailedPage(e));
+          clientResponse.end(getProxyFailedPage(errorToDisplay));
         }
       });
 
