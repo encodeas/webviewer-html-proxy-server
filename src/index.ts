@@ -111,6 +111,7 @@ const createServer = ({
   const app = express();
   app.use(cookieParser());
   app.use(cors(CORS_OPTIONS));
+  app.use(express.raw({type: "*/*"}))
 
   const PATH = `${SERVER_ROOT}:${PORT}`;
 
@@ -329,6 +330,10 @@ const createServer = ({
         }
       };
 
+      if (clientRequest.headers['content-type']) {
+        options.headers['Content-type']  = clientRequest.headers['content-type']
+      }
+
       const callback = (serverResponse: IncomingMessage, clientResponse: Response) => {
         // Delete 'x-frame-options': 'SAMEORIGIN'
         // so that the page can be loaded in an iframe
@@ -532,6 +537,12 @@ const createServer = ({
           clientResponse.end(getProxyFailedPage(errorToDisplay));
         }
       });
+
+      if (Object.keys(clientRequest.body).length > 0) {
+        serverRequest.write(clientRequest.body, () => {
+          console.log('Posting data completed');
+        });
+      }
 
       serverRequest.end();
     }
