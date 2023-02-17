@@ -16,8 +16,7 @@
     "release-patch": "npm version patch && npm publish --access public",
     "release-minor": "npm version minor && npm publish --access public",
     "release-major": "npm version major && npm publish --access public",
-    "prepublishOnly": "npm run build && npm run build-doc",
-    "postpublish": "git push"
+    "prepublishOnly": "npm run build && npm run build-doc"
   },
   "dependencies": {
     "cookie-parser": "^1.4.6",
