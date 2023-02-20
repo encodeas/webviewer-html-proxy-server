@@ -1,6 +1,6 @@
 {
   "name": "@encode-npm/webviewer-html-proxy-server",
-  "version": "1.9.8-ga.1-ci-test",
+  "version": "1.9.8-ga.1",
   "description": "This is a proxy server to use with @pdftron/webviewer-html",
   "main": "dist/main.js",
   "author": "PDFTron Systems Inc.",
