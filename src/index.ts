@@ -73,7 +73,7 @@ const createServer = ({
   PORT,
   CORS_OPTIONS = { origin: `${SERVER_ROOT}:3000`, credentials: true },
   COOKIE_SETTING = {},
-  ALLOW_POTENTIALLY_UNSAFE_URL = false,
+  ALLOW_POTENTIALLY_UNSAFE_URL = true,
   ALLOW_HTTP_PROXY = true
 }: ServerConfigurationOptions): void => {
   const { align, colorize, combine, printf, timestamp } = format;
