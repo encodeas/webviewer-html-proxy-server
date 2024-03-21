@@ -1,3 +1,11 @@
+## 1.10.0 (2024-03-04)
+
+- Added `ALLOW_POTENTIALLY_UNSAFE_URL`, a boolean value to disable URL validation
+
+## 1.9.8 (2023-01-26)
+
+- Update express package
+
 ## 1.9.7 (2023-01-20)
 
 - Improved page height calculation
